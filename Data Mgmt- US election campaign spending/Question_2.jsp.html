@@ -1,0 +1,119 @@
+
+
+    
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type='text/javascript' src='https://www.gstatic.com/charts/loader.js'></script>
+  <script type='text/javascript'>
+  google.charts.load("current", {packages:['corechart','bar']});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+      var data_age = google.visualization.arrayToDataTable([
+                                                        ['Age group', '15-19', '20-24', '25-34 ', '35-44',
+                                                         '45-54', '55-59', '60-64', '65-74','75-84', '85-more',{ role: 'annotation' } ],
+                                                        ['San Luis Obispo', 61712,79126,92020,80511,86131,47887,42726,61142,34043,16266, ''],
+                                                        ['Salinas', 39599,40348,133484,123965,103207,44404,35877,49538,26863,10288,''],
+                                                        ['Honolulu', 41836,51422,100805,86560,88128,48844,46581,63498,26755,16653, ''],
+                                                        ['Boise', 61158,49689,102859,104088,106130,51864,53866,80465,35466,13790, ''],
+                                                        ['Indianapolis',47230,59003,123347,96843,98706,46822,37843,46500,23426,10209, ''],
+                                                        ['San Diego', 45950,58950,133532,101449,103999,46942,42246,53892,28849,13728, ''],
+                                                        ['New Orleans', 47851,59857,125065,98700,102968,54367,44684,57932,27503,9253, ''],
+                                                        ['Saint Louis',51031,57729,119513,91599,97435,52383,45136,52088,27804,12512 ,''],
+                                                        ['Wichita', 48457,47498,97422,86933,90552,48064,43654,55358,33151,13734, ''],
+                                                        ['Las Vegas',44160,52995,109508,87184,96319,46349,35808,53567,25761,8789, '']
+                                                        
+                                                     ]);
+
+                                                    
+
+    var view_age = new google.visualization.DataView(data_age);
+    var options_age = {
+            width: 1000,
+            height: 700,
+            legend: { position: 'top', maxLines: 2 },
+            bar: { groupWidth: '70%' },
+            isStacked: 'percent',
+            chartArea:{left:200,top:100,width:"100%",height:"100%"}
+
+          };
+    var chart_age = new google.visualization.BarChart(document.getElementById("barchart_values_age"));
+    chart_age.draw(view_age, options_age);
+    
+    
+    var data_race = google.visualization.arrayToDataTable([
+['Race', 'White', 'Black or African American', 'American Indian & Alaska Native ', 'Asian','Native Hawaiian & Other Pacific Islander', 'Some other race','Two or more races', { role: 'annotation' } ],
+['San Luis Obispo', 589206,14076,4206,32642,1125,53522,31742, ''],
+['Salinas', 250694,20377,2624,394897,3958,51619,32826, ''],
+['Honolulu',229580,14130,1410,181674,84647,7223,193356 , ''],
+['Boise', 777990,3262,11316,9785,847,11243,19852, ''],
+['Indianapolis',460140,25416,1535,18624,1197,29334,19977, ''],
+['San Diego', 523582,23841,2149,146182,2295,21480,40073, ''],
+['New Orleans',249041,483709,1677,18531,330,11550,10969, ''],
+['Saint Louis', 329319,366252,1441,19023,350,7216,21181, ''],
+['Wichita', 600576,51516,7628,23757,98,14276,23128, ''],
+['Las Vegas', 380587,80435,3718,56930,5124,140790,26039, '']
+                                                          
+                                                       ]);
+
+                                                      
+
+      var view_race = new google.visualization.DataView(data_race);
+      var options_race= {
+              width: 1000,
+              height: 700,
+              legend: { position: 'top', maxLines: 2 },
+              bar: { groupWidth: '70%' },
+              isStacked: 'percent',
+              chartArea:{left:200,top:100,width:"100%",height:"100%"}
+
+            };
+      var chart_race = new google.visualization.BarChart(document.getElementById("barchart_values_race"));
+      chart_race.draw(view_race, options_race);
+      
+      
+      var data_income = google.visualization.arrayToDataTable([
+['Income', 'Less than $10,000', '$10,000 to $14,999', '$15,000 to 24,999', '$25,000 to $34,999','$35,000 to $49,999', '$50,000 to $74,999','$75,000 to $99,999','$100,000 to $149,999','$150,000 to $199,000','$200,000 or more', { role: 'annotation' } ],
+['San Luis Obispo', 12785,11987,22069,24593,29308,42936,33209,39082,15730,17196, ''],
+['Salinas', 8367,5488,11779,11871,16569,30775,31309,53660,32963,45555, ''],
+['Honolulu', 13855,8812,17969,16584,25504,41840,30926,37879,13691,12610, ''],
+['Boise',22452,14364,33001,38170,48030,62648,35778,31533,8442,10095 , ''],
+['Indianapolis',29731,19893,42232,35980,46613,50181,26165,22411,5710,4049, ''],
+['San Diego',13811,9209,15135,17255,27787,41086,36760,55856,29496,35999, ''],
+['New Orleans',41628,25646,39141,35913,40156,40730,26831,25945,8084,8561, ''],
+['Saint Louis', 37742,19837,35842,38700,49370,52351,31908,25273,8396,8211, ''],
+['Wichita', 19263,15005,26798,32290,38756,53867,33334,33925,10093,9147, ''],
+['Las Vegas',25019,17414,35760,34825,41827,42988,23064,16521,4134,3696, '']
+      
+      ]);
+
+                                                      
+
+      var view_income = new google.visualization.DataView(data_income);
+      var options_income= {
+              width: 1000,
+              height: 700,
+              legend: { position: 'top', maxLines: 4},
+              bar: { groupWidth: '70%' },
+              isStacked: 'percent',
+              chartArea:{left:200,top:100,width:"100%",height:"100%"}
+
+            };
+      var chart_income = new google.visualization.BarChart(document.getElementById("barchart_values_income"));
+      chart_income.draw(view_income, options_income);
+}
+</script>
+
+</head>
+<body>
+	<h1> Demographics in key markets (DMA)</h1>
+	<h3>AGE RANGE</h3>
+<div id="barchart_values_age"></div>
+   	<h3>RACE</h3>
+<div id="barchart_values_race"></div>
+<h3>HOUSEHOLD INCOME</h3>
+<div id="barchart_values_income"></div>
+  
+</body>
+</html>

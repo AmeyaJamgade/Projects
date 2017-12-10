@@ -1,0 +1,98 @@
+
+
+    
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type='text/javascript' src='https://www.gstatic.com/charts/loader.js'></script>
+  <script type='text/javascript'>
+  google.charts.load("current", {packages:['corechart','bar']});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+      var data_age = google.visualization.arrayToDataTable([
+['Market', 'By Candidate','By Individual','By Committee'],
+['ABERDEEN',0, 600,       0],
+['ATLANTA',       125808 , 2143968,          6937246],
+['BALTIMORE',595200,   1947551,            233913],
+['BIRMINGHAM',             640000,              640000,              1526426],
+['BOISE',             1376028,            1376028,            2106179],
+['BOSTON',         67859,  67859,  3750540],
+['BUFFALO',        159287,              0,           326321],
+['CHARLOTTE',   347984,              347984,              1468767],
+['CHATANOOGA',            2500,    360350,              556588],
+['CHICAGO',       3211674,            3216674,            17753568],
+['CINCINNATI',   726513,              726513,              2150783],
+['CLEVELAND',   536586,              539086,              1140288],
+['DAYTONA BEACH',       13000,  13000,  35482],
+['DENVER',         2117187,            2117187,            6216211],
+['DES MOINES', 6109758,            6109758,            8006424],
+['DETROIT',        4500,    4500,    1695921],
+['FORT WORTH',              807114,              807114,              1926043],
+['GREEN BAY',    17530,  17530,  54663],
+['GREENVILLE',  105833,              105833,              156571],
+['HONOLULU',   1006045,            1006045,            1284625],
+['HOUSTON',      1993297,            1993297,            5832364],
+['INDIANAPOLIS',            1150589,            1150589,            3607953],
+['KNOXVILLE',    137500,              137500,              285361],
+['LAS VEGAS',     3144202,            3144202,            10098403],
+['LITTLE ROCK',  642134,              642134,              2187305],
+['LOS ANGLELES',             2500,    2500,    9059172],
+['LOUISVILLE',    593330,              593330,              2320757],
+['MEMPHIS',      201343,              201343,              1143858],
+['MIAMI',            1944463,            1944463,            3510413],
+['MILWAUKEE', 972118,              972118,              1517797],
+['MINNEAPOLIS',             258903,              258903,              2425711],
+['NASHVILLE',    322127,              322127,              1393405],
+['NEW BRITAIN',              1000,    1000,    5100],
+['NEW ORLEANS',            500467,              500467,              1024643],
+['NEW YORK CITY',          10000,  10000,  188475],
+['OKLAHOMA CITY',        821203,              821203,              1964951],
+['OMAHA',         636839,              636839,              1144680],
+['PHILADELPHIA',            1934911,            1934911,            3857586],
+['PITTSBURGH', 724721,              724721,              2654968],
+['SAINT LOUIS',  1799946,            1799946,            3065992],
+['SALT LAKE CITY',           1572626,            1572626,            2886297],
+['SAN ANOTNIO',             2500,    2500,    3649365],
+['SAN DIEGO',    162341,              162341,              4771183],
+['SAN JOSE',       564250,              564250,              825298],
+['SAN LUIS OBISPO',        2413,    2413,    233056],
+['SEATTLE',         1811762,            1811762,            4703196],
+['TAMPA',           260472,              260472,              1873432],
+['TOPEKA',          708484,              708484,              1553004],
+['TULSA',             586972,              150700,              981020],
+['TUSCON',         5000,    10000,  1409193],
+['WASHINGTON DC',      3500,    16016,  38500],
+['WEST PALM BEACH',   38700,  107100,              4818],
+['WICHITA',        2000,    482500,              768668]
+                                                        
+                                                     ]);
+
+                                                    
+
+    var view_age = new google.visualization.DataView(data_age);
+    var options_age = {
+            width: 1500,
+            height: 2000,
+            legend: { position: 'top', maxLines: 1 },
+            bar: { groupWidth: '70%' },
+            isStacked: true,
+            chartArea:{left:200,top:100,width:"100%",height:"100%"}
+
+          };
+    
+    
+    var chart_age = new google.visualization.BarChart(document.getElementById("barchart_values_age"));
+    chart_age.draw(view_age, options_age);
+    
+    
+}
+</script>
+
+</head>
+<body>
+	<h1>Campaign Spending</h1>
+	<h3>By Committee, Candidate and Individual</h3>
+<div id="barchart_values_age" align="left"></div>
+</body>
+</html>

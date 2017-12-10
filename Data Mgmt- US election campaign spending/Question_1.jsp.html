@@ -1,0 +1,58 @@
+
+
+    
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type='text/javascript' src='https://www.gstatic.com/charts/loader.js'></script>
+  <script type='text/javascript'>
+   google.charts.load('current', {'packages': ['geomap']});
+   google.charts.setOnLoadCallback(drawMap);
+
+    function drawMap() {
+      var data = google.visualization.arrayToDataTable([
+        ['City', 'Percentage of Funds Raised remaining'],
+        ['Okhlahoma City', 1],
+        ['Milwuakee', 11],
+        ['Houston', 27],
+        ['Birmingham', 27],
+        ['Knoxville', 30],
+        ['Washington DC', 39],
+        ['San Antonio', 43],
+        ['Tucson', 47],
+        ['Buffalo', 52],
+        ['Des Moines', 56],
+        ['Las Vegas', 62],
+        ['Wichita', 64],
+        ['Saint Louis', 65],
+        ['New Orleans', 66],
+        ['San Diego', 70],
+        ['Indianapolis', 72],
+        ['Boise', 79],
+        ['Honolulu', 85],
+        ['Salinas', 90],
+        ['San Luis', 90]
+      ]);
+
+      var options = {width: '1000px',
+              height: '600px'};
+      options['region'] = 'US';
+      options['colors'] = [0xFF9997, 0xFFB800, 0xc02000]; //orange colors
+      options['dataMode'] = 'markers';
+
+      var container = document.getElementById('map_canvas');
+      var geomap = new google.visualization.GeoMap(container);
+      geomap.draw(data, options);
+    };
+
+  </script>
+</head>
+<body>
+	<h1>DMAs with greatest opportunity for advertising spending</h1>
+	<h3>Percentages of funds remaining</h3>
+    <div id='map_canvas'></div>
+   
+  
+</body>
+</html>

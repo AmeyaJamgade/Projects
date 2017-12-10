@@ -1,0 +1,66 @@
+
+
+    
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+ <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Congressional District',  'Virtual Channel', 'Digital Terrestrial Television'],
+          ['San Luis Obispo (KSBY)',6 ,15],
+          ['Salinas (KSBW-TV)', 8 ,8],
+          ['Honolulu (KHNL)', 13 ,35],
+          ['Boise (KTVB)', 7 ,7],
+          ['Indianapolis (WTHR)', 13 ,13],
+          ['San Diego (KNSD)', 39 ,40],
+          ['New Orleans (WDSU-TV)',6  ,43],
+          ['Saint Louis (KSDK)', 5 ,35],
+          ['Wichita (KSNW)', 3 ,45],
+          ['Las Vegas (KSNV)', 3 ,2]
+          
+          ]);
+
+        var options = {
+          title: 'NBC\'s stations in key DMAs',
+          vAxis: {title: 'Number of channels'},
+          isStacked: true
+        };
+
+        var chart = new google.visualization.SteppedAreaChart(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+        
+        
+        var data_donut = google.visualization.arrayToDataTable([
+                                                          ['Channel', 'Type'],
+                                                          ['O&O',     79],
+                                                          ['Affliates',  267]
+                                                        ]);
+        var options_donut = {
+                title: 'O&O vs Affliates',
+                pieHole: 0.2,
+              };
+
+              var chart_donut = new google.visualization.PieChart(document.getElementById('donutchart'));
+              chart_donut.draw(data_donut, options_donut);
+      }
+    </script>
+
+</head>
+<body>
+	<h1> How should NBC posture</h1>
+   <table>
+   <tr><td> <div id="chart_div" style="width: 800px; height: 500px;"></div></td>
+   <td> <div id="donutchart" style="width: 800px; height: 500px;"></div></td>
+   </tr>
+   </table>
+   
+
+   
+  
+</body>
+</html>
