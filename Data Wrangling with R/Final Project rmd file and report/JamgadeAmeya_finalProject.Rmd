@@ -1,0 +1,459 @@
+---
+title: "Analysis of Soccer Players in  FIFA 2018 Simulation Video Game"
+author: "Ameya Jamgade"
+date: "December 3, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+<img src="C:/Users/ameya/Desktop/MS BANA/Fall 2017/Data Wrangling with R/Project/1.jpg"; style="width:100%; height:100%;float: left; max-width:350px";>
+
+<img src="C:/Users/ameya/Desktop/MS BANA/Fall 2017/Data Wrangling with R/Project/2.jpg"; style="width:100%; height:100%;float: right; max-width:350px";> 
+
+ 
+<br> 
+<br>   
+<br> 
+<br> 
+<br> 
+<br> 
+<br> 
+<br> 
+<br> 
+<br> 
+<br>   
+
+
+
+
+#{.tabset .tabset-fade .tabset-pills}
+
+## INTRODUCTION
+
+FIFA 18 is a sports video game that simulates association soccer/football. The game is released annually by Electronic Arts under the EA Sports label. Fifa 18 contains many licensed leagues including leagues and teams from around the world, including the German Bundesliga , English Premier League and Football League, Italian Serie A, Spanish La Liga and French Ligue 1 allowing the use of real leagues, clubs and player names and likenesses within the games.
+
+This project aims to take a deep dive into ratings of 18000 real soccer players by conducting exploratory analysis to identify meaningful relationship between a players' valuation,  overall rating and age. Furthermore, the project includes building a regression model to predict the overall rating of a player based on several underlying factors. The metrics that would classify this project as a success would be diagnosis of data through exploratory analysis to identy hidden associations between relevant attributes.
+
+The scope of this project is limited to the above mentioned metrics with  elclusion of advanced analytical techniques such as cluster analysis in future due to time contraints, complexity of data and scalability of model. 
+
+Fifa is one of the most popular video games in the world with "FIFA 17" being the world's biggest-selling video game with 11.3 million copies sold thus far. Fifa is the largest contributor to its producer Electronic Arts' revenue helping it bring $1 billion in operating cash flows for year 2016. 
+
+By conducting a exploratory analysis, this project will help the consumers (gamers) better understand the realtionships between different attributes of a player. This would help consumers build better teams in in fifa gaming tounaments that has USD 1.4 million in prize money. It would also help them identify potential future soccer stars in game's career mode. There is also scope using this project's results for real time monetary benifits in legal betting outcomes such as bet360, bet-a-ffair and Fantasy Premier League (Global soccer betting industry is worth 500 billion USD). 
+
+ 
+
+
+## PACKAGES REQUIRED 
+Following are the packages required with their use:  
+
+**data.table** = Importing the dataset efficiently and effectively  
+**tidyverse** = Data manipulation and works well with other packages as well  
+**tibble** = Creating tibble  
+**tidyr** = Tidying up data  
+**dplyr** = Data Preparation  
+**DT** = Displaying dataset in asthetic format  
+**ggthemes** = For displaying graphs in different themes
+
+```{r, warning=FALSE, message=FALSE, results='hide'}
+install.packages("ggthemes", repos = "https://cran.rstudio.com") #installing package ggthemes
+###Loading all packages
+library(data.table) # Imprting data
+library(tidyverse) # Data manupulation
+library(tibble) # used to create tibbles
+library(tidyr) # used to tidy up data
+library(dplyr) # used for data manipulation
+library(DT) # used for datatable function for displaying dataset
+library("ggthemes") #for using themes for plots
+```
+
+
+## DATA PREPARATION {.tabset .tabset-fade .tabset-pills} 
+
+This dataset contains 74 attributes about approximately 18000 players from 166 nationalities.
+These attributes include players' Nationality, Club, Overall skill level, Preferred position, Value(in million Euros) and Weekly Wage (in '000 Euros)
+
+### Data Import
+
+The dataset was imported from Kaggle dataset repository. The dataset is called
+**FIFA 18 Complete Player Dataset** As per Kaggle, this data was extracted from the latest edition of FIFA.  
+Codebook can be found [here](https://www.kaggle.com/thec03u5/fifa-18-demo-player-dataset)  
+Note: Kaggle requires a username and password to download the dataset. Hence the dataset was uploaded on GitHub to access publically.
+
+```{r, warning=FALSE, message=FALSE}
+#Importing dataset and converting to tibble
+fifa18 <- as_tibble(fread("https://raw.githubusercontent.com/ameyaj2910/Data/master/CompleteDataset.csv", showProgress = FALSE))
+```
+
+
+### Data Preview
+```{r}
+class(fifa18) # class of the entire dataset
+
+colnames(fifa18) # Printing names of colomns of the datast
+
+dim(fifa18) # dimesnions of the data set
+
+datatable(head(fifa18, 6),options = list(scrollX = TRUE, pageLength = 3))
+
+```
+
+
+
+### Data Tidying & Cleaning
+
+
+**1. Converting dataset to tibble-**  
+The dataset has already been converted into a tibble format becasue it encapsulates best practices for data frames. Also after converting to tibble we dont have to worry about variables being automatically coerced as factors.  
+<br>
+<br>
+
+
+**2. Converting variables into appropriate data type-** 
+The Value and Wages of players contain bad characters and are not in proper folmat.  
+(Eg. Value = "â,¬95.5M")   
+Converted these 2 variables in proper format.
+
+About 250 of the 18000+ players have their Value and Wage =0. These are fringe players
+playing from the lowest leagues and hence fifa wasnt able to collect any data on them. these 250 players were removed from the dataset.
+```{r}
+fifa18$Value <- gsub(".*¬", "", fifa18$Value) # Converting Value to proper format
+fifa18$Value <- gsub("M$", "", fifa18$Value) #removing million character 'M'from player's value
+fifa18$Wage <- gsub(".*¬", "", fifa18$Wage) # Converting Wage to proper format
+fifa18$Wage <- gsub("K$", "", fifa18$Wage) #removing thousand character 'K' from wage
+
+fifa18 <- fifa18 %>%  subset(Value != 0) %>% subset(Wage != 0) # removing all players' whose Valuation and Wage is 0.
+
+```  
+<br>  
+
+Many of the columns had a second type of bad data such as Dribbling = '85+1' or Tacking = '70-1'. These values were converted to appropriate format.
+```{r, warning=FALSE, message=FALSE, results='hide'}
+fifa18 <- as.data.frame(fifa18) #converting into data frame as tibble doesnt give appropriate results for sub function
+
+for (i in 14:47) # Converting columns with player attributes to numeric
+{
+  fifa18[,i] <- sub("\\+.*", "", fifa18[,i])
+  fifa18[,i] <- sub("\\-.*", "", fifa18[,i])
+  
+}
+fifa18 <- as_tibble(fifa18)   #Converting back to tibble
+colnames(fifa18)[11] <- "Value in Million Euros"
+colnames(fifa18)[12] <- "Wage in '000 Euros"
+
+```
+<br> 
+ 
+A large number of player attributes are in character format instead of being in numeric format. These columns were converted to numeric format.
+
+```{r, warning=FALSE, message=FALSE}
+for (i in 11:47) # Converting columns with player attributes to numeric
+{
+  fifa18[,i] <- as.numeric(unlist(fifa18[,i] ))
+}
+
+
+```
+<br>
+
+Each player has multiple prefered positions (max of 3) in which he would like to play in a game. To be in a better state to explore this, the prefered postition was split into 3 columns.
+```{r , warning=FALSE, message=FALSE}
+names(fifa18)[64] <- "PreferedPosition" 
+fifa18_v1 <- separate(fifa18, PreferedPosition, c("PreferedPosition1", "PreferedPosition2", "PreferedPosition"), sep = " ") # Splitting a player's prefered positions
+```
+<br>
+<br>
+<br>
+  
+
+  
+**3. Tackling NULL, NA and duplicate values**  
+There were no NULL values in the dataset. However, a large number of columns have NA values.  
+Inital decision was to remove these values. However on closer analysis it was observed that a player with prefered psotition as Goal Keeper (GK) would never play in other psoitions such as Left Wing Back (LWB) or a Striker (ST). Hence a GoalKeeper (GK) would have these attributes as 'NA'. These NA values were replaced with 0. Similary a Striker (ST) would not have values for attributes such as 'GK Free Kick' or 'GK Positioning'
+
+The dataset consisted of 52 duplicate entries. These duplicate entries were removed.
+```{r , warning=FALSE, message=FALSE, results='hide'}
+colSums(is.na(fifa18_v1)) #To identify variables containing NULL values
+
+fifa18_v1[is.na(fifa18_v1)] <- 0 #Replace all NA values with 0
+
+colSums(is.na(fifa18_v1)) #Check if all NA values are converted to 0
+
+(is.null(fifa18_v1)) #Check for NULL values
+
+length(unique(fifa18_v1$ID)) #Calculating number of duplicates duplicates
+
+fifa18_v2 <- fifa18_v1[!duplicated(fifa18_v1$ID),] # Removing duplicates
+fifa18_final <- fifa18_v2
+```
+<br>
+<br>
+<br>
+
+
+
+
+### Final DataSet 
+
+The dataset thus formed satistifies all three interrelated rules which make a dataset tidy:  
+
+* Each variable must have its own column.
+* Each observation must have its own row.
+* Each value must have its own cell.
+
+The final dataset contains 17929 observations and 77 variables.
+```{r}
+# Displaying first 6 rows of cleaned dataset
+datatable(head(fifa18_final, 6),options = list(scrollX = TRUE, pageLength = 3))
+```  
+  
+ 
+<br>  
+<br>
+<br>
+The structure of the final dataset is such that qualitative information such as Name, Club represented by player, Prefered position and Nationality are in character format. On the other hand, quantitative information about a player such as his Age, Overall rating, Potential etc is in numeric form.  
+
+The Overall Rating of players follows a normal distribution with a minimum rating =46 and maximum rating = 94. The maximum proportion of the 18000 players in FIFA'18 are in the 20-25 year age bracket followed by the 25-30 year age bracket. The range of age of players is from 16-47 years.  
+
+Histograms are shown below to get a better picture.
+
+```{r, echo=FALSE, warning=FALSE}
+
+hist(fifa18_final$Age, breaks = 5, xlab = "Age", main = " Distribution of Age")
+summary(fifa18_final$Age)
+
+
+```
+<br>
+<br>
+Summary of a Player's potential
+```{r}
+summary(fifa18_final$Potential)
+```
+
+
+## EXPLORATORY DATA ANALYSIS {.tabset .tabset-fade .tabset-pills}
+
+### Star Players{.tabset .tabset-fade .tabset-pills}
+
+
+**1. Top 11 Players**
+<br>
+Exploratory analysis starts with identifying the top 11 players according to their Overall fifa rankings. It can be seen that these players have a very high valuation and command high wages.
+```{r, warning=FALSE}
+fifa18_final %>% 
+  arrange(-Overall) %>% 
+  top_n(11,wt = Overall) %>% 
+  select( Name, Age,Overall,Club,`Value in Million Euros`,`PreferedPosition1`) %>% datatable(options = list(scrollX = TRUE, pageLength = 11))
+```
+<br>  
+<br>
+<br>
+**2. Top player in each position**
+<br>
+Next step in the analysis was to find the top player in each of the given position a player plays in. Some position categories have more than one player with highest overall ranking.
+```{r, warning=FALSE, message= FALSE}
+fifa18_final %>% group_by(PreferedPosition1) %>%
+  arrange(-Overall) %>% 
+  top_n(1,wt = Overall) %>% 
+  select( `PreferedPosition1`,Name, Overall,Club,Nationality, 
+          `Value in Million Euros`,`Wage in '000 Euros`) %>% 
+  datatable(options = list(scrollX = TRUE, pageLength = 10))
+
+```
+<br>  
+<br>
+<br>
+
+**3. Distribution of overall ratings**
+The next step would be to understand the distributions of player rankings. As can be seen from barplot below, player rankings in fifa form a normal distribution with majority of the players are in 60-75 rating.
+```{r, warning=FALSE, message= FALSE}
+fifa18_final  %>% 
+  ggplot(aes(x = Overall, fill = factor(Overall))) +
+  geom_bar() + guides(fill = guide_legend(title = "Overall rating")) +
+  labs(title = "Player Ratings") +
+    theme(legend.position = "right", panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(), 
+          axis.line = element_line(colour = "black"))
+
+```
+
+### Relationships between player attributes{.tabset .tabset-fade .tabset-pills}
+
+**1. Players' position and age**
+<br>
+First impression about soccer tells us that there would be more players in their prime age playing in attacking positions that requires pace and quick reflexes whereas older players would take roles that traditionally benifit from experience such as defending.
+
+The below plot shows all players' prefered position against their age. We can see that defesnive positions such as a Center Back, Left Back, Central Defensive Midfielder and Goal Keepers tend to be older than attacking positions such as Striker. 
+```{r, warning=FALSE, message= FALSE}
+ggplot(fifa18_final, aes(x = Age, fill = (`PreferedPosition1`))) +
+  geom_bar(position = 'fill') + 
+  scale_fill_brewer(palette = "Green") + theme_solarized_2(light = F) +
+  scale_colour_solarized("blue") + 
+  guides(fill = guide_legend(title = "Prefered Position")) + 
+  labs(title = "PREFERED POSITIONS OF ALL PLAYERS OVER AGE",x = "Age") +
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank())
+```
+<br>  
+<br>
+<br>
+**2. Wage vs Player Position**
+<br>
+In real world, there is an extremely high wage disparity among soccer players. Players playing in European powerhouse leagues have much higher wages than player in other leagues. To visualize if fifa has incorporated this in gaming world as well, below comparison chart was created.
+```{r,warning=FALSE, message= FALSE}
+ggplot(data = fifa18_final, aes(`Wage in '000 Euros`, fill =     factor(`PreferedPosition1`))) + 
+  geom_bar() + scale_x_discrete(breaks = c(0,10,20,40,80, 160,320, 640)) +
+  guides(fill = guide_legend(title = "")) + 
+  labs(title = "COMPARISON OF NUMBER OF PLAYERS AT A WAGE BY POSITION") 
+
+
+```
+<br>  
+<br>
+<br>
+Majority of players earn waages between 0-40K euros everyweek. A very small proportion of players have weekly wages greater than 40K euros per week.  
+<br>  
+<br>
+<br>
+
+**3. Wage vs Age **
+<br>
+The next step in the analysis was to see if there is a relationship between a players age and their wages per week. It can be seen from below line graph that players in their prime soccer age (25-30) earn highest wages. Players nearing the end of their careers are receiving lower wages per week. Young players are typically bursting on to the footablling scene at their age (15-20 years. Hence their wage is on the lower side.
+```{r,warning=FALSE, message= FALSE}
+ggplot(data = fifa18_final, aes(x = Age, y = `Wage in '000 Euros`)) +
+  geom_line(color = "orange",size = 2) + labs(title = "WAGE vs AGE OF PLAYERS") +
+  theme( panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(), 
+          axis.line = element_line(colour = "black"))
+```
+
+<br>  
+<br>
+<br>
+
+**4. Position vs Wage by Overall rating**
+<br>
+Because of the nature of the game, players playing in attacking roles usually recive higher wages than those playing in defensive positions. This was testing for the fifa dataset and it was observed to be true. Even if two players have alomst the same overall rating, player playing in attacking role is receving higher wage than the player playing in traditionally defensive role. 
+
+```{r,warning=FALSE, message= FALSE}
+ggplot(data = fifa18_final, aes(x = `PreferedPosition1`, y = `Wage in '000 Euros`, color = Overall)) + geom_point() + geom_jitter() + labs(title = "") +
+  theme( panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(), 
+          axis.line = element_line(colour = "black"))
+```
+
+
+
+### Player's overall rating and potential{.tabset .tabset-fade .tabset-pills}
+
+**1. Overall rating vs Potential**
+<br>
+Correlation between a player's overall rating and the potential rating to which he can reach is shown below. It can be seen that a player's potential can never be below his current overall rating.
+
+Player's whose current rating is in the 50-60, the difference between Potential rating and current rating is high. This would mostly be because most of the players in this range are youngsters who can become better footballers over time.
+
+Players who have high current ratings are usually established players playing at the peak of their ability. Hence the dont have that much scope to improve.
+```{r,warning=FALSE, message= FALSE}
+ggplot(fifa18_final,aes(Overall, Potential)) +
+  geom_point( size = 2, alpha = .9) + geom_jitter() + 
+  theme( panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(), 
+          axis.line = element_line(colour = "black"))
+```
+<br>  
+<br>
+<br>
+
+**2. Variations with Age**
+<br>
+Below is the correlation between a player's overall rating and his potential rating. The breakdown is done by age.
+
+Young players (age =15-21) having low overall rating have much higher potential value compared to their current rating. This is mostly because these players are at early stages of learning and are still sharpening their skills.
+
+Conversely, older players (age=38-45) having low overall rating dont have that much scope to improve as age is catching up to them. Hence the scope for them to improve on their current rating is not that high.
+
+```{r,warning=FALSE, message= FALSE}
+ggplot(fifa18_final) +
+  geom_tile(aes(Overall, Potential, fill = Age)) + 
+  scale_fill_distiller(palette = "Spectral") + 
+  theme( panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(), 
+          axis.line = element_line(colour = "black"))
+```
+
+
+### Regression Analysis{.tabset .tabset-fade .tabset-pills}
+Final step in the exploratory analysis is to build a regression model. This project aims to find the association btween different attributes and overall rating for players who play in striker role.
+
+Based on general knowledge, Acceleration, Agility, Ball control,Finishing and Long shots were considered necessary attributes for a good striker.
+A regression model was build for the overall player rating.
+```{r,warning=FALSE, message= FALSE}
+Striker_data <- filter(fifa18_final, `PreferedPosition1` == "ST") #filtering fifa data for players who are strikers
+
+model <- lm(Overall ~ 
+               Acceleration + Agility + `Ball control` + 
+               Finishing + `Long shots`, data = Striker_data ) #creating a regression model
+```
+
+Summary of the regression model is shown below
+```{r,warning=FALSE, message= FALSE}
+summary(model) #summarizing the model
+
+```
+
+
+
+The Multiple R-squared of  0.9093 is very high suggesting that the model is a good fit of original data.
+Adjusted R-squared value of 0.9091 is also very high.
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+```{r,warning=FALSE, message= FALSE}
+
+anova(model)   #Ananlysis of variance
+
+```
+
+For a 95% confidence interval, the p-values of all these attirbutes is below 0.05. Hence all these attributes play a significant role in determining overall rating.
+
+The final regression model for a striker is   
+Overall Rating = 6.43 + 0.05*Acceleration - 0.02*Agility + 0.424*BallControl + 0.36*Finishing + 0.10*LongShots 
+
+## SUMMARY {.tabset .tabset-fade .tabset-pills}
+**Problem addressed in the project**
+The purpose of this final project was to put to work the tools and knowledge that you gain throughout this course on the fifa players in the R environment.This project took a deep dive into ratings of 18000 real soccer players by conducting exploratory analysis to identify meaningful relationship between a players' wage,  overall rating, future potential and age.
+<br>
+<br>
+<br>
+**Method of step-by-step analysis**
+This project problem was addressed by first cleaning of the data the arrive at tidy'ed and formatted dataset. Exploratory analysis was conducted on the data to identify top ranking players, distributions on different attributes. Finally a regression model was build to identify association between overall ranking and other attributes for strikers.
+<br>
+<br>
+<br>
+**Summary of Insights**      
+* Distribution of player ratings follows a normal distribution with majority of the ratings lie between 6-75.  
+* For top player in each position, most of them belong to Real Madrid club.  
+* More players in their prime age playing in attacking positions. However, as the   players start aging, they tend to prefer defensive positions.  
+* Majority of players earn waages between 0-40K euros everyweek. A very small proportion of players have weekly wages greater than 40K euros per week.   
+* Players in their prime soccer age (25-30) earn highest wages. Players nearing the end of their careers are receiving lower wages per week. Young players are typically bursting on to the footablling scene at their age (15-20 years. Hence their wage is on the lower side.  
+* Players playing in attacking roles usually recive higher wages than those playing in defensive positions.  
+* Young players (age =15-21) having low overall rating have much higher potential value compared to their current rating. Conversely, older players (age=38-45) having low overall rating dont have that much scope to improve as age is catching up to them. Hence the scope for them to improve on their current rating is not that high.
+* The overall rating of a striker is associated with Acceleration, Agility, Ball control,Finishing and Long shots. 
+<br>
+<br>
+<br>
+**Implications to the consumer**  
+This project will help the consumers (gamers) better understand the realtionships between different attributes of a player. This would help consumers build better teams in in fifa gaming tounaments that has USD 1.4 million in prize money. It would also help them identify potential future soccer stars in game's career mode. There is also scope using this project's results for real time monetary benifits in legal betting outcomes such as bet360, bet-a-ffair and Fantasy Premier League (Global soccer betting industry is worth 500 billion USD).
+
+

@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/337232/5079210add02487aa5cb6bca1f15114a
+bundleId: https://api.rpubs.com/api/v1/document/337232/5079210add02487aa5cb6bca1f15114a
+url: http://rpubs.com/Ameya/337232
+when: 1512353006.13014
